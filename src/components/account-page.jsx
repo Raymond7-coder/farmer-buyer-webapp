@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Button } from "./ui/button.jsx";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card.jsx";
-import { Input } from "./ui/input.jsx";
-import { Label } from "./ui/label.jsx";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs.jsx";
-import { Badge } from "./ui/badge.jsx";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Badge } from "./ui/badge";
 import { User, Mail, Phone, MapPin, Calendar, Package, ShoppingCart } from 'lucide-react';
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 
 export function AccountPage({ user, onProfileUpdate }) {
   const [userType, setUserType] = useState(user?.userType || 'farmer');

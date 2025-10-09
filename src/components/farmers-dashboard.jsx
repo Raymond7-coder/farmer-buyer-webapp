@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { Button } from "./ui/button.jsx";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card.jsx";
-import { Input } from "./ui/input.jsx";
-import { Label } from "./ui/label.jsx";
-import { Textarea } from "./ui/textarea.jsx";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select.jsx";
-import { ImageWithFallback } from "./figma/ImageWithFallback.jsx";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Textarea } from "./ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Plus, Edit, Trash2, DollarSign, Package, TrendingUp, Eye } from 'lucide-react';
 
 export function FarmersDashboard() {

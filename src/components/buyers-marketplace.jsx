@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Button } from "./ui/button.jsx";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card.jsx";
-import { Input } from "./ui/input.jsx";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select.jsx";
-import { ImageWithFallback } from "./figma/ImageWithFallback.jsx";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog.jsx";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { Input } from "./ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Search, Filter, MapPin, ShoppingCart, Star, Heart, Package, Eye, Minus, Plus, X } from 'lucide-react';
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 
 export function BuyersMarketplace({ cart: initialCart, setCart: updateCart }) {
   const [activeTab, setActiveTab] = useState('browse');

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button } from "./ui/button.jsx";
+import { Button } from "./ui/button";
 import { Menu, X, Home, Users, ShoppingCart, TrendingUp, User, LogOut } from 'lucide-react';
 
 export function Navigation({ currentPage, setCurrentPage, user, onLogout }) {

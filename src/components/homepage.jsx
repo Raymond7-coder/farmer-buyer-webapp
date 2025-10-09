@@ -1,6 +1,6 @@
-import { Button } from "./ui/button.jsx";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card.jsx";
-import { ImageWithFallback } from "./figma/ImageWithFallback.jsx";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Users, ShoppingCart, TrendingUp, Leaf, MapPin, DollarSign, ArrowRight, UserCheck } from 'lucide-react';
 
 export function Homepage({ setCurrentPage, onUserTypeSelect, user }) {
