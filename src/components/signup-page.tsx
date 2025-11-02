@@ -15,6 +15,11 @@ interface SignupPageProps {
   onSwitchToLogin: () => void;
 }
 
+/* ---------- validators ---------- */
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i; // simple + solid
+const phoneRegex = /^\d{7,15}$/;                      // 7–15 digits only
+const onlyDigits = (v: string) => v.replace(/\D/g, "");
+
 export function SignupPage({ userType, onBack, onSignup, onSwitchToLogin }: SignupPageProps) {
   const [formData, setFormData] = useState({
     name: '',
@@ -51,11 +56,18 @@ export function SignupPage({ userType, onBack, onSignup, onSwitchToLogin }: Sign
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const newErrors: {[key: string]: string} = {};
 
-    // Basic validation
+    // Let browser HTML5 validation run (type, required, pattern)
+    const formEl = e.currentTarget;
+    if (!formEl.checkValidity()) {
+      formEl.reportValidity();
+      return;
+    }
+
+    // Basic requireds
     if (!formData.name) newErrors.name = 'Full name is required';
     if (!formData.email) newErrors.email = 'Email is required';
     if (!formData.phone) newErrors.phone = 'Phone number is required';
@@ -64,10 +76,17 @@ export function SignupPage({ userType, onBack, onSignup, onSwitchToLogin }: Sign
     if (!formData.location) newErrors.location = 'Location is required';
     if (!formData.agreeToTerms) newErrors.terms = 'Please accept the terms and conditions';
 
+    // Extra strict checks
+    if (formData.email && !emailRegex.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+    if (formData.phone && !phoneRegex.test(formData.phone)) {
+      newErrors.phone = 'Phone number must be 7–15 digits only';
+    }
+
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
-
     if (formData.password && formData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
     }
@@ -85,7 +104,6 @@ export function SignupPage({ userType, onBack, onSignup, onSwitchToLogin }: Sign
       return;
     }
 
-    // Simulate successful signup
     onSignup(userType, formData);
   };
 
@@ -127,7 +145,7 @@ export function SignupPage({ userType, onBack, onSignup, onSwitchToLogin }: Sign
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6" noValidate>
               
               {/* Basic Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -139,6 +157,9 @@ export function SignupPage({ userType, onBack, onSignup, onSwitchToLogin }: Sign
                   </Label>
                   <Input
                     id="name"
+                    name="name"
+                    type="text"
+                    required
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
                     placeholder="Your full name"
@@ -157,9 +178,14 @@ export function SignupPage({ userType, onBack, onSignup, onSwitchToLogin }: Sign
                   </Label>
                   <Input
                     id="email"
+                    name="email"
                     type="email"
+                    autoComplete="email"
+                    required
                     value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value.trim() })
+                    }
                     placeholder="your.email@example.com"
                     className={`border-green-300 focus:ring-green-500 py-3 ${
                       errors.email ? 'border-red-500' : ''
@@ -172,13 +198,24 @@ export function SignupPage({ userType, onBack, onSignup, onSwitchToLogin }: Sign
                 <div className="space-y-2">
                   <Label htmlFor="phone" className="text-green-800 flex items-center">
                     <Phone size={20} className="mr-2 text-green-600" />
-                    Phone Number
+                    Phone No.
                   </Label>
                   <Input
                     id="phone"
+                    name="phone"
+                    type="tel"
+                    inputMode="numeric"
+                    pattern="\d{7,15}"
+                    maxLength={15}
+                    required
                     value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                    placeholder="+234 XXX XXX XXXX"
+                    onChange={(e) => setFormData({ ...formData, phone: onlyDigits(e.target.value) })}
+                    onKeyDown={(e) => {
+                      const k = e.key;
+                      const allowed = ['Backspace','Delete','Tab','ArrowLeft','ArrowRight','Home','End'];
+                      if (!allowed.includes(k) && !/^\d$/.test(k)) e.preventDefault();
+                    }}
+                    placeholder="Digits only, e.g. 08012345678"
                     className={`border-green-300 focus:ring-green-500 py-3 ${
                       errors.phone ? 'border-red-500' : ''
                     }`}
@@ -194,6 +231,9 @@ export function SignupPage({ userType, onBack, onSignup, onSwitchToLogin }: Sign
                   </Label>
                   <Input
                     id="location"
+                    name="location"
+                    type="text"
+                    required
                     value={formData.location}
                     onChange={(e) => setFormData({...formData, location: e.target.value})}
                     placeholder="Your location"
@@ -215,7 +255,9 @@ export function SignupPage({ userType, onBack, onSignup, onSwitchToLogin }: Sign
                   <div className="relative">
                     <Input
                       id="password"
+                      name="password"
                       type={showPassword ? 'text' : 'password'}
+                      required
                       value={formData.password}
                       onChange={(e) => setFormData({...formData, password: e.target.value})}
                       placeholder="Create password"
@@ -244,7 +286,9 @@ export function SignupPage({ userType, onBack, onSignup, onSwitchToLogin }: Sign
                   <div className="relative">
                     <Input
                       id="confirmPassword"
+                      name="confirmPassword"
                       type={showConfirmPassword ? 'text' : 'password'}
+                      required
                       value={formData.confirmPassword}
                       onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
                       placeholder="Confirm password"
