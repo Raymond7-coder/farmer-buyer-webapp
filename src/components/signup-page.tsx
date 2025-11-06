@@ -20,6 +20,11 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i; // simple + solid
 const phoneRegex = /^\d{7,15}$/;                      // 7–15 digits only
 const onlyDigits = (v: string) => v.replace(/\D/g, "");
 
+// ASCII-safe name validation (HTML pattern doesn't support \p{L} consistently)
+const NAME_REGEX_ASCII = /^[A-Za-z\s.'-]+$/;
+const sanitizeName = (v: string) => v.replace(/[^A-Za-z\s.'-]/g, '');
+const isValidName = (v: string) => v.trim().length >= 2 && NAME_REGEX_ASCII.test(v.trim());
+
 export function SignupPage({ userType, onBack, onSignup, onSwitchToLogin }: SignupPageProps) {
   const [formData, setFormData] = useState({
     name: '',
@@ -68,7 +73,12 @@ export function SignupPage({ userType, onBack, onSignup, onSwitchToLogin }: Sign
     }
 
     // Basic requireds
-    if (!formData.name) newErrors.name = 'Full name is required';
+    if (!formData.name) {
+      newErrors.name = 'Full name is required';
+    } else if (!isValidName(formData.name)) {
+      newErrors.name = "Name can only contain letters, spaces, apostrophes (’), hyphens (-) and dots (.)";
+    }
+
     if (!formData.email) newErrors.email = 'Email is required';
     if (!formData.phone) newErrors.phone = 'Phone number is required';
     if (!formData.password) newErrors.password = 'Password is required';
@@ -159,14 +169,28 @@ export function SignupPage({ userType, onBack, onSignup, onSwitchToLogin }: Sign
                     id="name"
                     name="name"
                     type="text"
+                    inputMode="text"
+                    autoComplete="name"
                     required
                     value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: sanitizeName(e.target.value) })
+                    }
+                    onBlur={(e) =>
+                      setFormData({ ...formData, name: e.target.value.trim() })
+                    }
+                    pattern="^[A-Za-z\s.'-]+$"
+                    title="Use letters only (spaces, ’, -, . allowed)"
                     placeholder="Your full name"
                     className={`border-green-300 focus:ring-green-500 py-3 ${
                       errors.name ? 'border-red-500' : ''
                     }`}
                   />
+                  {formData.name && !isValidName(formData.name) && (
+                    <p className="text-red-600 text-sm">
+                      Use letters only (spaces, ’, -, . allowed)
+                    </p>
+                  )}
                   {errors.name && <p className="text-red-600 text-sm">{errors.name}</p>}
                 </div>
 
